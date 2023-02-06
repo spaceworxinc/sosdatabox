@@ -1,9 +1,9 @@
-
 name: SOS Inventory
 on:
   schedule:
     - cron: '0 11 * * *'
   workflow_dispatch:
+permissions: write-all
 jobs:
   build:
     runs-on: ubuntu-latest
