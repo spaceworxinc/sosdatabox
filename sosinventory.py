@@ -166,6 +166,7 @@ for archived in ['no', 'yes']:
 
         if content['count'] == 200:
             SOSINVENTORY_PARAMS_DATA_BUILD['start'] += 200
+            time.sleep(0.5)
         else:
             break
 
@@ -206,6 +207,7 @@ for archived in ['no', 'yes']:
 
         if content['count'] == 200:
             SOSINVENTORY_PARAMS_DATA_ITEM['start'] += 200
+            time.sleep(0.5)
         else:
             break
 
@@ -252,6 +254,7 @@ for archived in ['no', 'yes']:
 
         if content['count'] == 200:
             SOSINVENTORY_PARAMS_DATA_SALE['start'] += 200
+            time.sleep(0.5)
         else:
             break
 
@@ -295,6 +298,7 @@ for archived in ['no', 'yes']:
 
         if content['count'] == 200:
             SOSINVENTORY_PARAMS_DATA_SHIPMENT['start'] += 200
+            time.sleep(0.5)
         else:
             break
 
@@ -338,6 +342,7 @@ for archived in ['no', 'yes']:
 
         if content['count'] == 200:
             SOSINVENTORY_PARAMS_DATA_WORK_ORDERS['start'] += 200
+            time.sleep(0.5)
         else:
             break
 
