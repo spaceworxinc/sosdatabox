@@ -138,6 +138,8 @@ for archived in ['no', 'yes']:
 
     while True:
 
+        time.sleep(0.5)
+
         SOSINVENTORY_PARAMS_DATA_BUILD['archived'] = archived
 
         print('SOSInventory > Fetching builds > /build >', archived, '> start >',
@@ -166,7 +168,6 @@ for archived in ['no', 'yes']:
 
         if content['count'] == 200:
             SOSINVENTORY_PARAMS_DATA_BUILD['start'] += 200
-            time.sleep(0.5)
         else:
             break
 
@@ -180,6 +181,8 @@ items = []
 for archived in ['no', 'yes']:
 
     while True:
+
+        time.sleep(0.5)
 
         SOSINVENTORY_PARAMS_DATA_ITEM['archived'] = archived
 
@@ -207,7 +210,6 @@ for archived in ['no', 'yes']:
 
         if content['count'] == 200:
             SOSINVENTORY_PARAMS_DATA_ITEM['start'] += 200
-            time.sleep(0.5)
         else:
             break
 
@@ -221,6 +223,8 @@ sales = []
 for archived in ['no', 'yes']:
 
     while True:
+
+        time.sleep(0.5)
 
         SOSINVENTORY_PARAMS_DATA_SALE['archived'] = archived
 
@@ -254,7 +258,6 @@ for archived in ['no', 'yes']:
 
         if content['count'] == 200:
             SOSINVENTORY_PARAMS_DATA_SALE['start'] += 200
-            time.sleep(0.5)
         else:
             break
 
@@ -268,6 +271,8 @@ shipments = []
 for archived in ['no', 'yes']:
 
     while True:
+
+        time.sleep(0.5)
 
         SOSINVENTORY_PARAMS_DATA_SHIPMENT['archived'] = archived
 
@@ -298,7 +303,6 @@ for archived in ['no', 'yes']:
 
         if content['count'] == 200:
             SOSINVENTORY_PARAMS_DATA_SHIPMENT['start'] += 200
-            time.sleep(0.5)
         else:
             break
 
@@ -312,6 +316,8 @@ work_orders = []
 for archived in ['no', 'yes']:
 
     while True:
+
+        time.sleep(0.5)
 
         SOSINVENTORY_PARAMS_DATA_WORK_ORDERS['archived'] = archived
 
@@ -342,7 +348,6 @@ for archived in ['no', 'yes']:
 
         if content['count'] == 200:
             SOSINVENTORY_PARAMS_DATA_WORK_ORDERS['start'] += 200
-            time.sleep(0.5)
         else:
             break
 
