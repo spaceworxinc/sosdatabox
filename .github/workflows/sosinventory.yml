@@ -23,7 +23,7 @@ jobs:
       - name: Set git credentials
         run: |
           git config --local user.email "denis@databox.com"
-          git config --local user.name "databox-cip"
+          git config --local user.name "dhallai"
       - name: Check for changes
         run: git status
       - name: Stage changed files
