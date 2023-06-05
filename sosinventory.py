@@ -246,6 +246,10 @@ for archived in ['no', 'yes']:
         for sale in content['data']:
 
             date = sale['date'][:10]
+            if isinstance(sale['department'], dict):
+                department = sale['department']['name']
+            else:
+                department = 'Not set'
 
             for item in sale['lines']:
                 sales.append({
@@ -253,7 +257,9 @@ for archived in ['no', 'yes']:
                     'id': item['item']['id'],
                     'name': item['item']['name'],
                     'quantity': item['quantity'],
-                    'amount': ((item['quantity'] - item['shipped']) * item['unitprice']) if not sale['closed'] else 0
+                    'amount': ((item['quantity'] - item['shipped']) * item['unitprice']) if not sale['closed'] else 0,
+                    'department': department,
+                    'closed': sale['closed']
                 })
 
         if content['count'] == 200:
@@ -364,7 +370,7 @@ df_shipments = pandas.DataFrame(shipments)
 df_work_orders = pandas.DataFrame(work_orders)
 
 # Open Sales Orders Amount
-q = """SELECT date, SUM(amount) AS metric
+q = """SELECT date, SUM(CASE WHEN closed = 'True' THEN 0 ELSE amount END) AS metric
        FROM df_sales
        GROUP BY date"""
 
@@ -390,6 +396,54 @@ for x in r:
     metric = {
         '$Open_Work_Orders': round(data['metric'], 6),
         'date': data['date']
+    }
+    payload.append(metric.copy())
+
+# Sales
+q = """SELECT s.date, SUM(s.amount) AS metric
+       FROM df_sales s
+       WHERE s.closed = 'True'
+       GROUP BY date"""
+
+r = sql(q).to_dict(orient='index')
+
+for x in r:
+    data = r[x]
+    metric = {
+        '$Sales_Orders_Amount': round(data['metric'], 2),
+        'date': data['date']
+    }
+    payload.append(metric.copy())
+
+# Sales by Department
+q = """SELECT s.date, s.department AS dimension, SUM(s.amount) AS metric
+       FROM df_sales s
+       GROUP BY date, dimension"""
+
+r = sql(q).to_dict(orient='index')
+
+for x in r:
+    data = r[x]
+    metric = {
+        '$Sales_Orders_Amount': round(data['metric'], 2),
+        'date': data['date'],
+        'Department': data['dimension'],
+    }
+    payload.append(metric.copy())
+
+# Sales by Item
+q = """SELECT s.date, s.name AS dimension, SUM(s.amount) AS metric
+       FROM df_sales s
+       GROUP BY date, dimension"""
+
+r = sql(q).to_dict(orient='index')
+
+for x in r:
+    data = r[x]
+    metric = {
+        '$Sales_Orders_Amount': round(data['metric'], 2),
+        'date': data['date'],
+        'Item': data['dimension'],
     }
     payload.append(metric.copy())
 
@@ -420,6 +474,38 @@ for x in r:
     data = r[x]
     metric = {
         '$Units_Built': round(data['metric'], 2),
+        'date': data['date'],
+        'Category': data['dimension'],
+    }
+    payload.append(metric.copy())
+
+# Units Shipped
+q = """SELECT date, SUM(quantity) AS metric
+       FROM df_shipments
+       GROUP BY date"""
+
+r = sql(q).to_dict(orient='index')
+
+for x in r:
+    data = r[x]
+    metric = {
+        '$Units_Shipped': round(data['metric'], 2),
+        'date': data['date']
+    }
+    payload.append(metric.copy())
+
+# Units Shipped by Category
+q = """SELECT b.date, i.category AS dimension, SUM(b.quantity) AS metric
+       FROM df_shipments b
+       INNER JOIN df_items i ON i.id = b.id
+       GROUP BY date, dimension"""
+
+r = sql(q).to_dict(orient='index')
+
+for x in r:
+    data = r[x]
+    metric = {
+        '$Units_Shipped': round(data['metric'], 2),
         'date': data['date'],
         'Category': data['dimension'],
     }
@@ -457,25 +543,9 @@ for x in r:
     }
     payload.append(metric.copy())
 
-# Units Shipped
-q = """SELECT date, SUM(quantity) AS metric
-       FROM df_shipments
-       GROUP BY date"""
-
-r = sql(q).to_dict(orient='index')
-
-for x in r:
-    data = r[x]
-    metric = {
-        '$Units_Shipped': round(data['metric'], 2),
-        'date': data['date']
-    }
-    payload.append(metric.copy())
-
-# Units Shipped by Category
-q = """SELECT b.date, i.category AS dimension, SUM(b.quantity) AS metric
-       FROM df_shipments b
-       INNER JOIN df_items i ON i.id = b.id
+# Units Sold by Department
+q = """SELECT s.date, s.department AS dimension, SUM(s.quantity) AS metric
+       FROM df_sales s
        GROUP BY date, dimension"""
 
 r = sql(q).to_dict(orient='index')
@@ -483,9 +553,25 @@ r = sql(q).to_dict(orient='index')
 for x in r:
     data = r[x]
     metric = {
-        '$Units_Shipped': round(data['metric'], 2),
+        '$Units_Sold': round(data['metric'], 2),
         'date': data['date'],
-        'Category': data['dimension'],
+        'Department': data['dimension'],
+    }
+    payload.append(metric.copy())
+
+# Units Sold by Item
+q = """SELECT s.date, s.name AS dimension, SUM(s.quantity) AS metric
+       FROM df_sales s
+       GROUP BY date, dimension"""
+
+r = sql(q).to_dict(orient='index')
+
+for x in r:
+    data = r[x]
+    metric = {
+        '$Units_Sold': round(data['metric'], 2),
+        'date': data['date'],
+        'Item': data['dimension'],
     }
     payload.append(metric.copy())
 
