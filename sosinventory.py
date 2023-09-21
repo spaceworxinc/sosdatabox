@@ -434,6 +434,8 @@ for x in r:
 # Sales by Item
 q = """SELECT s.date, s.name AS dimension, SUM(s.amount) AS metric
        FROM df_sales s
+       INNER JOIN df_items i ON i.id = s.id 
+       WHERE i.category IN('SPACEWORX USA ASSEMBLY', 'SPACEWORX COMPLETE (Metal) PODS')
        GROUP BY date, dimension"""
 
 r = sql(q).to_dict(orient='index')
@@ -562,6 +564,8 @@ for x in r:
 # Units Sold by Item
 q = """SELECT s.date, s.name AS dimension, SUM(s.quantity) AS metric
        FROM df_sales s
+       INNER JOIN df_items i ON i.id = s.id 
+       WHERE i.category IN('SPACEWORX USA ASSEMBLY', 'SPACEWORX COMPLETE (Metal) PODS')
        GROUP BY date, dimension"""
 
 r = sql(q).to_dict(orient='index')
